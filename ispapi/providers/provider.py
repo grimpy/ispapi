@@ -26,7 +26,7 @@ class Provider(object):
         return NotImplemented
 
     def login_from_session_data(self, session_data):
-        """Do the login procedure from the session info"""
+        """Do the login procedure from the cached session info"""
         return NotImplemented
 
     def get_quota(self):
