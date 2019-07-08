@@ -94,6 +94,7 @@ def repr_providers_info(providers_info):
 
 if __name__ == '__main__':
     import argparse
+    import json
     providers = load_providers()
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--list-providers', action='store_true', help='detailed list of supported providers')
@@ -108,4 +109,4 @@ if __name__ == '__main__':
         parser.print_help()
         exit(255)
     else:
-        print(options.func(options))
+        print(json.dumps(options.func(options)))
