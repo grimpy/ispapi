@@ -8,11 +8,16 @@ Bundle of client to talk to ISP APIs
 
 ## Add your provider
 
-To add a new provider create a file inside providers module. The provider implements a subclass of `Provider` class.
+To add a new provider create a file inside providers module and add the corresponding import to `providers/__init__.py`. The provider implements a subclass of `Provider` class.
 
 ### Methods to be implemented in the provider
 
 ```py
+class MyProvider(Provider):
+    def __init__(self, param1, param2='default value'):
+        super().__init__(param1, param2)
+        # do something with the paramters
+
     def login_internal(self):
         """Do the login procedure and return session info"""
         return NotImplemented
