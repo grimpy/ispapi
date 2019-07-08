@@ -5,6 +5,7 @@ Bundle of client to talk to ISP APIs
 
 - TelecomEgypt
 - Vodafone Egypt
+- Lebara NL
 
 ## Add your provider
 
