@@ -62,7 +62,7 @@ class ProviderInfo(object):
         d = {k.replace('-', '_'): v for k, v in args._get_kwargs() if k.replace('-', '_') in args_names}
         p = self.provider(**d)
         p.login()
-        p.get_quota()
+        return p.get_quota()
 
     def add_parser(self, subparsers):
         parser = subparsers.add_parser(self.name.lower(), help='{name} adapter'.format(name=self.name))
