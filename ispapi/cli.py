@@ -8,6 +8,7 @@ def load_providers():
 shorthands = {
     "username": "u",
     "password": "p",
+    "email": "e",
 }
 
 class Arg(object):
