@@ -35,4 +35,5 @@ class Provider(object):
 
     def _get_quota(self):
         """Get quota"""
+        # TODO: define a schema for quotas
         raise NotImplementedError()
