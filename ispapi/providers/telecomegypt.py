@@ -54,7 +54,7 @@ class TelecomEgypt(Provider):
         self.password = password
         self.session = requests.Session()
 
-    def login_internal(self):
+    def _login(self):
         resp = self.session.get(TOKENURL)
         responsedata = self._validate_response(resp, 'Failed to get token')
         self.session.headers['Jwt'] = responsedata['body']['jwt']
@@ -80,7 +80,7 @@ class TelecomEgypt(Provider):
             raise RuntimeError('{}: {}'.format(message, responsedata['header']['responseMessage']))
         return responsedata
 
-    def get_quota_internal(self):
+    def _get_quota(self):
         if is_jwt_expired(self.session.headers['Jwt']):
             self.login()
         postdata = {

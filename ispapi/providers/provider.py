@@ -17,11 +17,11 @@ class Provider(object):
             login = self.login_from_session_data(session_data)
             if login is not NotImplemented and login is not None:
                 return login
-        login = self.login_internal()
+        login = self._login()
         if login is not NotImplemented and login is not None:
             self.store_session_data(login)
 
-    def login_internal(self):
+    def _login(self):
         """Do the login procedure and return session info"""
         return NotImplemented
 
@@ -31,8 +31,8 @@ class Provider(object):
 
     def get_quota(self):
         """Get quota"""
-        return self.get_quota_internal()
+        return self._get_quota()
 
-    def get_quota_internal(self):
+    def _get_quota(self):
         """Get quota"""
         raise NotImplementedError()

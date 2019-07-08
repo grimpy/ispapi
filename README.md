@@ -18,7 +18,7 @@ class MyProvider(Provider):
         super().__init__(param1, param2)
         # do something with the paramters
 
-    def login_internal(self):
+    def _login(self):
         """Do the login procedure and return session info"""
         return NotImplemented
 
@@ -26,15 +26,15 @@ class MyProvider(Provider):
         """Do the login procedure from the cached session info"""
         return NotImplemented
 
-    def get_quota_internal(self):
+    def _get_quota(self):
         """Get quota"""
         raise NotImplementedError()
 ```
 
-`get_quota_internal` is the only method that is required to be implemented. `login_internal` and `login_from_session_data` are optional.
+`_get_quota` is the only method that is required to be implemented. `_login` and `login_from_session_data` are optional.
 
-`login_internal` tries to login, it optionally returns `session_data` to be stored and used later for login.
-`login_from_session_data` will be tried first with the last stored `session_data` before trying to use `login_internal` again.
+`_login` tries to login, it optionally returns `session_data` to be stored and used later for login.
+`login_from_session_data` will be tried first with the last stored `session_data` before trying to use `_login` again.
 
 ### Formatting for the provider
 

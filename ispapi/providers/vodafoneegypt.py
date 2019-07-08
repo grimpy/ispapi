@@ -13,7 +13,7 @@ class VodafoneEgypt(Provider):
         self.session = requests.Session()
 
 
-    def login(self):
+    def _login(self):
         data = {'username': self.username, 'password': self.password,
                 'grant_type': 'password', 'client_id': 'my-trusted-client',
                 'client_secret': 'secret'}
@@ -24,7 +24,7 @@ class VodafoneEgypt(Provider):
         self.session.headers['msisdn'] = self.username
         return respdata
 
-    def get_quota_internal(self):
+    def _get_quota(self):
         resp = self.session.post(QUOTAURL, json={"msisdn": self.username}, headers={'api-host': 'MobileInternetHost', "Referer": "https://web.vodafone.com.eg/en/redmanagement"})
         resp.raise_for_status()
         respdata = resp.json()

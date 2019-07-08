@@ -23,7 +23,7 @@ class LebaraNL(Provider):
     def cleanup_string(s):
         return re.sub(r'\s+|\xa0', ' ', s.strip())
 
-    def login_internal(self):
+    def _login(self):
         login_form = requests.get(LOGIN_FORM_URL)
         login_form_b = BeautifulSoup(login_form.text, features=BS4_PARSER)
         csrf_elem = login_form_b.find(attrs={'id': 'lebaraLoginForm'}).find(attrs={'name': 'CSRFToken'})
@@ -36,7 +36,7 @@ class LebaraNL(Provider):
         self.page = login.text
         return dict(self.cookies)
 
-    def get_quota_internal(self):
+    def _get_quota(self):
         if self.page is None:
             dashboard = requests.get(DASHBOARD_URL, cookies=self.cookies)
             self.page = dashboard.text
