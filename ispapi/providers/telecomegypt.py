@@ -4,7 +4,7 @@ import time
 import base64
 import json
 
-from .provider import Provider
+from .provider import Provider, Quota
 
 TOKENURL = 'https://api-my.te.eg/api/user/generatetoken?channelId=WEB_APP'
 STATUSURL = 'https://api-my.te.eg/api/user/status'
@@ -92,4 +92,9 @@ class TelecomEgypt(Provider):
             'body': {}
         }
         resp = self.session.post(DATAURL, json=postdata)
-        return self._validate_response(resp, 'Failed to get data')
+        respdata = self._validate_response(resp, 'Failed to get data')
+        for bundle in respdata['body']['detailedLineUsageList']:
+            if bundle['remainingDaysForRenewal'] != 0:
+                break
+        endtime = time.time() + bundle['remainingDaysForRenewal'] * 24 * 3600
+        return Quota(endtime, bundle['initialTotalAmount'] * 1024 ** 2, bundle['usedAmount'] * 1024 ** 2)

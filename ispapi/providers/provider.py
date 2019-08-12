@@ -1,3 +1,12 @@
+from collections import namedtuple
+import time
+
+
+Quota = namedtuple("Quota", "end total consumed")
+
+def to_gib(bytesize):
+    return bytesize / 1024 ** 3
+
 class Provider(object):
     def __init__(self, *args, **kwargs):
         self.args = args
@@ -37,3 +46,18 @@ class Provider(object):
         """Get quota"""
         # TODO: define a schema for quotas
         raise NotImplementedError()
+
+    def get_percentage_used(self, quota):
+        return quota.consumed / quota.total
+
+    def get_percentage_time(self, quota, bundletime):
+        remainingdays =  (quota.end - time.time()) / (24 * 3600)
+        return (bundletime - remainingdays) / bundletime
+
+    def print_quota(self):
+        self.login()
+        quota = self.get_quota()
+
+        print("Used {:.2f} / {:.2f} GiB Expires: {}".format(to_gib(quota.consumed), to_gib(quota.total), time.ctime(quota.end)))
+
+

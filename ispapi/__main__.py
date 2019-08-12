@@ -4,7 +4,7 @@ import inspect
 
 def load_providers():
     """Loads providers"""
-    import providers
+    from . import providers
     return get_providers_info([val for key, val in providers.Providers.__dict__.items() if not key.startswith("_")])
 
 shorthands = {
@@ -64,8 +64,7 @@ class ProviderInfo(object):
         args_names = [arg.name for arg in self.args]
         d = {k.replace('-', '_'): v for k, v in args._get_kwargs() if k.replace('-', '_') in args_names}
         p = self.provider(**d)
-        p.login()
-        return p.get_quota()
+        p.print_quota()
 
     def add_parser(self, subparsers):
         parser = subparsers.add_parser(self.name.lower(), help='{name} adapter'.format(name=self.name))
@@ -88,7 +87,7 @@ def get_providers_info(providers):
         provider=provider,
         name=provider.__name__,
         description=provider.__doc__ or "",
-        args=Arg.get_args_from_argspec(inspect.getargspec(provider.__init__)),
+        args=Arg.get_args_from_argspec(inspect.getfullargspec(provider.__init__)),
     ) for provider in providers]
 
 def repr_providers_info(providers_info):
@@ -96,7 +95,6 @@ def repr_providers_info(providers_info):
 
 if __name__ == '__main__':
     import argparse
-    import json
     providers = load_providers()
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--list-providers', action='store_true', help='detailed list of supported providers')
@@ -111,4 +109,4 @@ if __name__ == '__main__':
         parser.print_help()
         exit(255)
     else:
-        print(json.dumps(options.func(options)))
+        options.func(options)
