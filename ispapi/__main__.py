@@ -93,7 +93,7 @@ def get_providers_info(providers):
 def repr_providers_info(providers_info):
     return '\n'.join(str(provider_info) for provider_info in providers_info)
 
-if __name__ == '__main__':
+def main():
     import argparse
     providers = load_providers()
     parser = argparse.ArgumentParser()
@@ -110,3 +110,7 @@ if __name__ == '__main__':
         exit(255)
     else:
         options.func(options)
+
+
+if __name__ == '__main__':
+    main()

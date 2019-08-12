@@ -48,16 +48,15 @@ class Provider(object):
         raise NotImplementedError()
 
     def get_percentage_used(self, quota):
-        return quota.consumed / quota.total
+        return (quota.consumed / quota.total) * 100
 
     def get_percentage_time(self, quota, bundletime):
         remainingdays =  (quota.end - time.time()) / (24 * 3600)
-        return (bundletime - remainingdays) / bundletime
+        return ((bundletime - remainingdays) / bundletime) * 100
 
     def print_quota(self):
         self.login()
         quota = self.get_quota()
 
         print("Used {:.2f} / {:.2f} GiB Expires: {}".format(to_gib(quota.consumed), to_gib(quota.total), time.ctime(quota.end)))
-
 
