@@ -4,6 +4,8 @@ import time
 import base64
 import json
 
+from .provider import Provider, Quota
+
 TOKENURL = 'https://api-my.te.eg/api/user/generatetoken?channelId=WEB_APP'
 STATUSURL = 'https://api-my.te.eg/api/user/status'
 LOGINURL = 'https://api-my.te.eg/api/user/login?channelId=WEB_APP'
@@ -43,14 +45,16 @@ def is_jwt_expired(jwt):
     return ddata['exp'] - 60 < time.time()
 
 
-class TelecomEgypt:
+class TelecomEgypt(Provider):
     def __init__(self, username, password):
+        """AD"""
+        super().__init__(username, password)
         self.username  = username
         self.customerId = None
         self.password = password
         self.session = requests.Session()
 
-    def login(self):
+    def _login(self):
         resp = self.session.get(TOKENURL)
         responsedata = self._validate_response(resp, 'Failed to get token')
         self.session.headers['Jwt'] = responsedata['body']['jwt']
@@ -76,7 +80,7 @@ class TelecomEgypt:
             raise RuntimeError('{}: {}'.format(message, responsedata['header']['responseMessage']))
         return responsedata
 
-    def get_data(self):
+    def _get_quota(self):
         if is_jwt_expired(self.session.headers['Jwt']):
             self.login()
         postdata = {
@@ -88,16 +92,9 @@ class TelecomEgypt:
             'body': {}
         }
         resp = self.session.post(DATAURL, json=postdata)
-        return self._validate_response(resp, 'Failed to get data')
-
-
-
-if __name__ == '__main__':
-    import argparse 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-u', '--user')
-    parser.add_argument('-p', '--password')
-    options = parser.parse_args()
-    inet = TelecomEgypt(options.user, options.password)
-    inet.login()
-    print(inet.get_data())
+        respdata = self._validate_response(resp, 'Failed to get data')
+        for bundle in respdata['body']['detailedLineUsageList']:
+            if bundle['remainingDaysForRenewal'] != 0:
+                break
+        endtime = time.time() + bundle['remainingDaysForRenewal'] * 24 * 3600
+        return Quota(endtime, bundle['initialTotalAmount'] * 1024 ** 2, bundle['usedAmount'] * 1024 ** 2)
