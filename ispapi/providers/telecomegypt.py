@@ -93,8 +93,13 @@ class TelecomEgypt(Provider):
         }
         resp = self.session.post(DATAURL, json=postdata)
         respdata = self._validate_response(resp, 'Failed to get data')
+        remainingDaysForRenewal = 0
+        initialTotalAmount = 0
+        usedAmount = 0
         for bundle in respdata['body']['detailedLineUsageList']:
-            if bundle['remainingDaysForRenewal'] != 0:
-                break
-        endtime = time.time() + bundle['remainingDaysForRenewal'] * 24 * 3600
-        return Quota(endtime, bundle['initialTotalAmount'] * 1024 ** 2, bundle['usedAmount'] * 1024 ** 2)
+            if bundle['remainingDaysForRenewal'] > remainingDaysForRenewal:
+                remainingDaysForRenewal = bundle['remainingDaysForRenewal']
+            initialTotalAmount += bundle['initialTotalAmount']
+            usedAmount += bundle['usedAmount']
+        endtime = time.time() + remainingDaysForRenewal * 24 * 3600
+        return Quota(endtime, initialTotalAmount * 1024 ** 2, usedAmount * 1024 ** 2)
