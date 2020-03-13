@@ -63,7 +63,7 @@ class TelecomEgypt(Provider):
         statusdata['header']['msisdn'] = self.username
         resp = self.session.post(STATUSURL, json=statusdata)
         responsedata = self._validate_response(resp, 'Failed to get status')
-        
+
         logindata = copy.deepcopy(LOGINDATA)
         logindata['header']['msisdn'] = self.username
         logindata['header']['timestamp'] = str(responsedata['header']['timstamp'])
@@ -93,13 +93,14 @@ class TelecomEgypt(Provider):
         }
         resp = self.session.post(DATAURL, json=postdata)
         respdata = self._validate_response(resp, 'Failed to get data')
-        remainingDaysForRenewal = 0
+        endtime = time.time()  # now
         initialTotalAmount = 0
         usedAmount = 0
         for bundle in respdata['body']['detailedLineUsageList']:
-            if bundle['remainingDaysForRenewal'] > remainingDaysForRenewal:
-                remainingDaysForRenewal = bundle['remainingDaysForRenewal']
+            endtimebundle = time.mktime(time.strptime(bundle['renewalDate'], "%Y-%m-%d"))
+            if endtimebundle > endtime:
+                # it expired end of the day
+                endtime = endtimebundle + 24 * 3600
             initialTotalAmount += bundle['initialTotalAmount']
             usedAmount += bundle['usedAmount']
-        endtime = time.time() + remainingDaysForRenewal * 24 * 3600
         return Quota(endtime, initialTotalAmount * 1024 ** 2, usedAmount * 1024 ** 2)
