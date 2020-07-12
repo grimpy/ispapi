@@ -57,6 +57,8 @@ class Provider(object):
     def print_quota(self):
         self.login()
         quota = self.get_quota()
+        percentage = self.get_percentage_used(quota)
 
-        print("Used {:.2f} / {:.2f} GiB Expires: {}".format(to_gib(quota.consumed), to_gib(quota.total), time.ctime(quota.end)))
+        print('{:.2f}/{:.2f},{},{}'.format(to_gib(quota.consumed), to_gib(quota.total), percentage, time.ctime(quota.end)))
 
+        
