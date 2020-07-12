@@ -103,4 +103,4 @@ class TelecomEgypt(Provider):
                 endtime = endtimebundle + 24 * 3600
             initialTotalAmount += bundle['initialTotalAmount']
             usedAmount += bundle['usedAmount']
-        return Quota(endtime, initialTotalAmount * 1024 ** 2, usedAmount * 1024 ** 2)
+        return Quota(endtime, initialTotalAmount * 1024 ** 3, usedAmount * 1024 ** 3)
