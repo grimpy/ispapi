@@ -4,5 +4,5 @@ certifi==2019.6.16
 chardet==3.0.4
 idna==2.8
 requests==2.22.0
-soupsieve==1.9.2
+soupsieve==2.3.1
 urllib3==1.25.3
