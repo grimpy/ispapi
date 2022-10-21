@@ -7,26 +7,14 @@ import json
 from .provider import Provider, Quota
 
 TOKENURL = 'https://api-my.te.eg/api/user/generatetoken?channelId=WEB_APP'
-STATUSURL = 'https://api-my.te.eg/api/user/status'
 LOGINURL = 'https://api-my.te.eg/api/user/login?channelId=WEB_APP'
 DATAURL = 'https://api-my.te.eg/api/line/freeunitusage'
-
-STATUSDATA = {
-  "header": {
-    "timestamp": 0,
-    "customerId": "",
-    "msisdn": "",
-    "messageCode": "",
-    "locale": "En"
-  },
-  "body": {}
-}
 
 LOGINDATA = {
   "header": {
     "msisdn": "",
     "timestamp": "",
-    "locale": "En"
+    "locale": "en"
   },
   "body": {
     "password": ""
@@ -59,14 +47,9 @@ class TelecomEgypt(Provider):
         responsedata = self._validate_response(resp, 'Failed to get token')
         self.session.headers['Jwt'] = responsedata['body']['jwt']
 
-        statusdata = copy.deepcopy(STATUSDATA)
-        statusdata['header']['msisdn'] = self.username
-        resp = self.session.post(STATUSURL, json=statusdata)
-        responsedata = self._validate_response(resp, 'Failed to get status')
-
         logindata = copy.deepcopy(LOGINDATA)
         logindata['header']['msisdn'] = self.username
-        logindata['header']['timestamp'] = str(responsedata['header']['timstamp'])
+        logindata['header']['timestamp'] = str(int(time.time()))
         logindata['body']['password'] = self.password
         resp = self.session.post(LOGINURL, json=logindata)
         responsedata = self._validate_response(resp, 'Failed to login')
@@ -103,4 +86,4 @@ class TelecomEgypt(Provider):
                 endtime = endtimebundle + 24 * 3600
             initialTotalAmount += bundle['initialTotalAmount']
             usedAmount += bundle['usedAmount']
-        return Quota(endtime, initialTotalAmount * 1024 ** 2, usedAmount * 1024 ** 2)
+        return Quota(endtime, initialTotalAmount * 1024 ** 3, usedAmount * 1024 ** 3)

@@ -51,7 +51,7 @@ class Provider(object):
         return (quota.consumed / quota.total) * 100
 
     def get_percentage_time(self, quota, bundletime):
-        remainingdays =  (quota.end - time.time()) / (24 * 3600)
+        remainingdays = (quota.end - time.time()) / (24 * 3600)
         return ((bundletime - remainingdays) / bundletime) * 100
 
     def print_quota(self):
