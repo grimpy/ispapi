@@ -14,7 +14,8 @@ LOGINDATA = {
   "header": {
     "msisdn": "",
     "timestamp": "",
-    "locale": "en"
+    "locale": "en",
+    "numberServiceType": "FBB"
   },
   "body": {
     "password": ""
@@ -70,7 +71,8 @@ class TelecomEgypt(Provider):
             'header': {
                 'customerId': self.customerId,
                 'msisdn': self.username,
-                'locale': 'En'
+                'locale': 'en',
+                'numberServiceType': 'FBB'
             },
             'body': {}
         }
